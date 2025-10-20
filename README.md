@@ -163,6 +163,27 @@ Una vez autenticado, puedes:
 - Accede a `/admin/` con credenciales de superusuario
 - Gestiona usuarios y tareas desde la interfaz administrativa
 
+## Usuarios de Prueba
+
+El sistema incluye usuarios preconfigurados para facilitar las pruebas y demostración:
+
+### Usuarios Regulares
+Usuarios que pueden ingresar, crear, editar y eliminar tareas:
+
+- **Usuario**: `Mati2`
+  - **Contraseña**: `Trabajo2000`
+  
+- **Usuario**: `Mati1`
+  - **Contraseña**: `Mati2000`
+
+### SuperUsuario
+Usuario administrador con acceso completo al panel de administración:
+
+- **SuperUser**: `Mati10`
+  - **Contraseña**: `Mati2000`
+
+> **Nota**: Estos usuarios están disponibles para pruebas. En producción, asegúrate de cambiar las contraseñas por defecto y crear usuarios personalizados según tus necesidades.
+
 ## URLs Principales
 
 | URL | Descripción | Requiere Autenticación |
