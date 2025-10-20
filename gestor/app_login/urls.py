@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 #Nombre del espacio para las URLs de autenticación
-app_name = 'panel'
+app_name = 'auth'
 
 urlpatterns = [
     #Autenticación - login, logout, register

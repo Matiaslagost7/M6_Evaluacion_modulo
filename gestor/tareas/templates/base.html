@@ -46,15 +46,15 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'tareas:task_list' %}">Mis Tareas</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'panel:logout' %}">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="{% url 'auth:logout' %}">Cerrar Sesión</a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'panel:login' %}">Iniciar Sesión</a>
+                            <a class="nav-link" href="{% url 'auth:login' %}">Iniciar Sesión</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light ms-2" href="{% url 'panel:register' %}">Registrarse</a>
+                            <a class="nav-link btn btn-outline-light ms-2" href="{% url 'auth:register' %}">Registrarse</a>
                         </li>
                     {% endif %}
                 </ul>

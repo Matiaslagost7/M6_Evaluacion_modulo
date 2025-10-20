@@ -91,4 +91,4 @@ def LogoutView(request):
     else:
         messages.info(request, 'Has cerrado sesión correctamente.')
     
-    return redirect('panel:login')
+    return redirect('auth:login')

@@ -8,7 +8,7 @@ def verificar_login_permiso(request, permiso_necesario):
     Si no tiene el permiso, muestra un mensaje de error y redirige a la página principal.
     """
     if not request.user.is_authenticated:
-        return redirect('panel:login')
+        return redirect('auth:login')
     
     if not request.user.has_perm(permiso_necesario):
         messages.error(request, "No tienes permiso para acceder a esta sección.")
@@ -22,6 +22,6 @@ def verificar_login(request):
     Si no está autenticado, redirige a la página de login.
     """
     if not request.user.is_authenticated:
-        return redirect('panel:login')
+        return redirect('auth:login')
     
     return None  # Indica que el usuario está autenticado

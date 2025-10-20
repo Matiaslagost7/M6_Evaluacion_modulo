@@ -19,9 +19,9 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'app_login.CustomUser'
 
 # Configuración de autenticación obligatoria
-LOGIN_URL = '/tareas/login/'           # Página de login obligatoria
-LOGIN_REDIRECT_URL = '/tareas/index/'  # Página principal de autos tras login
-LOGOUT_REDIRECT_URL = '/tareas/login/' # Página de login tras logout
+LOGIN_URL = '/login/'                   # Página de login obligatoria
+LOGIN_REDIRECT_URL = '/'                # Página principal tras login
+LOGOUT_REDIRECT_URL = '/login/'         # Página de login tras logout
 
 # Configuración adicional de seguridad para el admin
 ADMIN_URL_PREFIX = 'admin/'  # Prefijo del admin (puedes cambiarlo por seguridad)

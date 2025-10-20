@@ -7,11 +7,11 @@ urlpatterns = [
     # Panel de administración de Django
     path('admin/', admin.site.urls),
 
+    # URLs de autenticación en el nivel raíz
+    path('', include('app_login.urls')),
+    
     # URLs Públicas - Sin autenticación requerida
     path('', include('tareas.urls')),
-
-    # URLs Privadas - Requieren autenticación
-    path('panel/', include('app_login.urls')),
 ]
 
 if settings.DEBUG:
