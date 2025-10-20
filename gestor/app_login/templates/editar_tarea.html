@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar: {{ tarea.titulo }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'tareas:index' %}">Inicio</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'tareas:task_list' %}">Tareas</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'tareas:task_update' tarea.id %}">{{ tarea.titulo }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Editar</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Editar Tarea
+                </h2>
+                <small class="text-muted">
+                    Modifica los detalles de tu tarea
+                </small>
+            </div>
+
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Título -->
+                    <div class="mb-4">
+                        <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                            <i class="fas fa-heading me-1"></i>{{ form.nombre.label }} *
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.nombre.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Proporciona un título claro y descriptivo para tu tarea.
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>{{ form.descripcion.label }}
+                        </label>
+                        {{ form.descripcion }}
+                        {% if form.descripcion.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.descripcion.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Describe los detalles, objetivos o pasos necesarios para completar esta tarea.
+                        </div>
+                    </div>
+
+                    <!-- Fecha de Vencimiento -->
+                    <div class="mb-4">
+                        <label for="{{ form.fecha_vencimiento.id_for_label }}" class="form-label">
+                            <i class="fas fa-calendar-times me-1"></i>{{ form.fecha_vencimiento.label }} *
+                        </label>
+                        {{ form.fecha_vencimiento }}
+                        {% if form.fecha_vencimiento.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.fecha_vencimiento.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Fecha y hora límite para completar la tarea
+                        </div>
+                    </div>
+
+                    <!-- Estado de Completado -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form.completada }}
+                            <label class="form-check-label" for="{{ form.completada.id_for_label }}">
+                                <i class="fas fa-check-circle me-1"></i>{{ form.completada.label }}
+                            </label>
+                            {% if form.completada.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.completada.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Información de fechas -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <small class="text-muted d-block mb-1">Fecha de Creación</small>
+                                <strong>
+                                    <i class="fas fa-calendar-plus me-1"></i>
+                                    {{ tarea.fecha_creacion|date:"d/m/Y H:i" }}
+                                </strong>
+                            </div>
+                        </div>
+                        {% if tarea.fecha_actualizacion %}
+                            <div class="col-md-6">
+                                <div class="bg-light p-3 rounded">
+                                    <small class="text-muted d-block mb-1">Última Actualización</small>
+                                    <strong>
+                                        <i class="fas fa-calendar-edit me-1"></i>
+                                        {{ tarea.fecha_actualizacion|date:"d/m/Y H:i" }}
+                                    </strong>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-warning me-2">
+                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                            </button>
+                            <a href="{% url 'tareas:task_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                        </div>
+                        
+                        <a href="{% url 'tareas:task_delete' tarea.id %}" 
+                           class="btn btn-outline-danger"
+                           onclick="return confirm('¿Estás seguro de que quieres eliminar esta tarea?')">
+                            <i class="fas fa-trash me-2"></i>Eliminar Tarea
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar clases Bootstrap a los campos del formulario Django
+    const inputs = document.querySelectorAll('input[type="text"], input[type="datetime-local"], input[type="date"], input[type="email"], textarea');
+    inputs.forEach(function(input) {
+        input.classList.add('form-control');
+    });
+    
+    // Convertir el campo de fecha a datetime-local si es necesario
+    const fechaInput = document.querySelector('input[name="fecha_vencimiento"]');
+    if (fechaInput && fechaInput.type !== 'datetime-local') {
+        fechaInput.type = 'datetime-local';
+    }
+    
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.classList.add('form-check-input');
+    });
+    
+    const selects = document.querySelectorAll('select');
+    selects.forEach(function(select) {
+        select.classList.add('form-select');
+    });
+});
+</script>
+{% endblock %}

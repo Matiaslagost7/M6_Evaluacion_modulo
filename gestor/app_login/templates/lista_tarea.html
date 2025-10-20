@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Tareas - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>
+            <i class="fas fa-tasks me-2"></i>Mis Tareas
+        </h1>
+        <p class="text-muted mb-0">Administra y organiza todas tus tareas desde aquí</p>
+    </div>
+    <a href="{% url 'tareas:task_create' %}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>Nueva Tarea
+    </a>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <select class="form-select" id="filtroEstado">
+                    <option value="">Todas las tareas</option>
+                    <option value="pendiente">Pendientes</option>
+                    <option value="en_progreso">En Progreso</option>
+                    <option value="completada">Completadas</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="filtroPrioridad">
+                    <option value="">Todas las prioridades</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Media</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="buscarTarea" placeholder="Buscar tareas...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Tareas -->
+{% if tareas %}
+    <div class="row">
+        {% for tarea in tareas %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 tarea-card" 
+                     data-estado="{{ tarea.estado }}" 
+                     data-prioridad="{{ tarea.prioridad }}"
+                     data-titulo="{{ tarea.titulo|lower }}">
+                    
+                    <!-- Header de la tarjeta -->
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ tarea.fecha_creacion|date:"d/m/Y" }}
+                        </small>
+                        
+                        <!-- Badge de prioridad -->
+                        {% if tarea.prioridad == 'alta' %}
+                            <span class="badge bg-danger">Alta</span>
+                        {% elif tarea.prioridad == 'media' %}
+                            <span class="badge bg-warning">Media</span>
+                        {% else %}
+                            <span class="badge bg-success">Baja</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Título -->
+                        <h5 class="card-title">
+                            <a href="{% url 'tareas:task_update' tarea.id %}" 
+                               class="text-decoration-none text-dark">
+                                {{ tarea.titulo }}
+                            </a>
+                        </h5>
+
+                        <!-- Descripción -->
+                        <p class="card-text text-muted">
+                            {% if tarea.descripcion|length > 100 %}
+                                {{ tarea.descripcion|truncatechars:100 }}
+                            {% else %}
+                                {{ tarea.descripcion|default:"Sin descripción" }}
+                            {% endif %}
+                        </p>
+
+                        <!-- Estado -->
+                        <div class="mb-3">
+                            {% if tarea.estado == 'completada' %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Completada
+                                </span>
+                            {% elif tarea.estado == 'en_progreso' %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-clock me-1"></i>En Progreso
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-hourglass-start me-1"></i>Pendiente
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Fecha límite -->
+                        {% if tarea.fecha_limite %}
+                            <small class="text-muted d-block mb-2">
+                                <i class="fas fa-clock me-1"></i>
+                                Vence: {{ tarea.fecha_limite|date:"d/m/Y" }}
+                                {% now "Y-m-d" as today %}
+                                {% if tarea.fecha_limite|date:"Y-m-d" < today %}
+                                    <span class="text-danger fw-bold">(Vencida)</span>
+                                {% endif %}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'tareas:task_update' tarea.id %}" 
+                               class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit me-1"></i>Editar
+                            </a>
+                            <a href="{% url 'tareas:task_delete' tarea.id %}" 
+                               class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash me-1"></i>Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+        <nav aria-label="Paginación de tareas">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
+{% else %}
+    <!-- Estado vacío -->
+    <div class="text-center py-5">
+        <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">No tienes tareas aún</h3>
+        <p class="text-muted">¡Crea tu primera tarea para comenzar a organizarte!</p>
+        <a href="{% url 'tareas:task_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Crear Primera Tarea
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filtroEstado = document.getElementById('filtroEstado');
+    const filtroPrioridad = document.getElementById('filtroPrioridad');
+    const buscarTarea = document.getElementById('buscarTarea');
+    const tarjetas = document.querySelectorAll('.tarea-card');
+
+    function filtrarTareas() {
+        const estado = filtroEstado.value;
+        const prioridad = filtroPrioridad.value;
+        const busqueda = buscarTarea.value.toLowerCase();
+
+        tarjetas.forEach(tarjeta => {
+            const tarjetaEstado = tarjeta.dataset.estado;
+            const tarjetaPrioridad = tarjeta.dataset.prioridad;
+            const tarjetaTitulo = tarjeta.dataset.titulo;
+
+            const cumpleEstado = !estado || tarjetaEstado === estado;
+            const cumplePrioridad = !prioridad || tarjetaPrioridad === prioridad;
+            const cumpleBusqueda = !busqueda || tarjetaTitulo.includes(busqueda);
+
+            if (cumpleEstado && cumplePrioridad && cumpleBusqueda) {
+                tarjeta.closest('.col-md-6').style.display = 'block';
+            } else {
+                tarjeta.closest('.col-md-6').style.display = 'none';
+            }
+        });
+    }
+
+    filtroEstado.addEventListener('change', filtrarTareas);
+    filtroPrioridad.addEventListener('change', filtrarTareas);
+    buscarTarea.addEventListener('input', filtrarTareas);
+});
+</script>
+{% endblock %}
